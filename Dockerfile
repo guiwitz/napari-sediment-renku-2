@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 #RUN pip install "napari[all]==0.5.4" napari-sediment pyqt5
+RUN . /opt/conda/etc/profile.d/conda.sh
 RUN conda create -n sediment python=3.13 napari pyqt6 pip
 RUN conda activate sediment
 RUN pip install napari-sediment
