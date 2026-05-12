@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y \
     libxcb-cursor0 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install "napari[all]==0.5.4" napari-sediment pyqt5
+#RUN pip install "napari[all]==0.5.4" napari-sediment pyqt5
+RUN conda create -n sediment python=3.13 napari pyqt6 pip
+RUN conda activate sediment
+RUN pip install napari-sediment
 
 # Re-register VNC with jupyter-server-proxy
 RUN printf 'c.ServerProxy.servers = {\n    "vnc": {\n        "command": [\n            "websockify", "-v",\n            "--web", "/opt/noVNC-1.1.0",\n            "--heartbeat", "30",\n            "5901",\n            "--unix-target", "/home/jovyan/.vnc/socket",\n            "--",\n            "vncserver", "-verbose",\n            "-xstartup", "dbus-launch xfce4-session",\n            "-geometry", "1024x768",\n            "-SecurityTypes", "None",\n            "-rfbunixpath", "/home/jovyan/.vnc/socket",\n            "-fg", ":1"\n        ],\n        "port": 5901,\n        "timeout": 30,\n        "new_browser_tab": False,\n        "launcher_entry": {\n            "title": "Desktop",\n            "enabled": True\n        }\n    }\n}\n' >> /etc/jupyter/jupyter_server_config.py
@@ -35,7 +38,7 @@ RUN mkdir -p /home/jovyan/.cache/napari && \
     chown -R ${NB_USER}:${NB_GID} /home/jovyan/.cache
 
 # Create a launcher script
-RUN printf '#!/bin/bash\nexport DISPLAY=:1\nexport LIBGL_ALWAYS_SOFTWARE=1\nexport PYOPENGL_PLATFORM=egl\nexport NUMBA_CACHE_DIR=/tmp/numba_cache\nnapari\n' > /usr/local/bin/launch_napari.sh && \
+RUN printf '#!/bin/bash\nexport DISPLAY=:1\nexport LIBGL_ALWAYS_SOFTWARE=1\nexport PYOPENGL_PLATFORM=egl\nexport NUMBA_CACHE_DIR=/tmp/numba_cache\nconda activate sediment\nnapari\n' > /usr/local/bin/launch_napari.sh && \
     chmod +x /usr/local/bin/launch_napari.sh
 
 # Create a desktop icon
