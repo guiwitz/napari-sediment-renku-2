@@ -38,7 +38,7 @@ RUN mkdir -p /home/jovyan/.cache/napari && \
     chown -R ${NB_USER}:${NB_GID} /home/jovyan/.cache
 
 # Create a launcher script
-RUN printf '#!/bin/bash\nexport DISPLAY=:1\nexport LIBGL_ALWAYS_SOFTWARE=1\nexport PYOPENGL_PLATFORM=egl\nexport NUMBA_CACHE_DIR=/tmp/numba_cache\nconda activate sediment\nnapari\n' > /usr/local/bin/launch_napari.sh && \
+RUN printf '#!/bin/bash\nexport DISPLAY=:1\nexport LIBGL_ALWAYS_SOFTWARE=1\nexport PYOPENGL_PLATFORM=egl\nexport NUMBA_CACHE_DIR=/tmp/numba_cache\nconda init bash\nconda activate sediment\nnapari\n' > /usr/local/bin/launch_napari.sh && \
     chmod +x /usr/local/bin/launch_napari.sh
 
 # Create a desktop icon
